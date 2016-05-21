@@ -35,7 +35,7 @@ void CommunicationWidget::on_OpenButton_toggled(bool checked)
         if (port->open(QIODevice::ReadWrite)) {
             ui->statusLabel->setText("Port otwarty");
             ui->portListComboBox->setEnabled(false);
-            //connect(serial,SIGNAL(readyRead()),this,SLOT(readData()));
+            connect(port,SIGNAL(readyRead()),this,SLOT(readData()));
         } else {
             ui->statusLabel->setText("Nie można otworzyć portu" + port->errorString());
             ui->OpenButton->setChecked(false);
@@ -47,7 +47,7 @@ void CommunicationWidget::on_OpenButton_toggled(bool checked)
         {
             port->close();
         }
-        //disconnect(serial,SIGNAL(readyRead()),this,SLOT(readData()));
+        disconnect(port,SIGNAL(readyRead()),this,SLOT(readData()));
         ui->portListComboBox->setEnabled(true);
     }
 }
@@ -66,4 +66,32 @@ void CommunicationWidget::on_portListComboBox_activated(const QString &arg1)
         ui->portListComboBox->setCurrentIndex(0);
     }
 
+}
+
+void CommunicationWidget::readData()
+{
+    dataBuffer.append(port->readAll());
+    //emit rawData(portData);
+    //QStringList frame;
+    buffer = dataBuffer.split("\t");
+    dataBuffer = buffer.takeLast();
+    for(int i=0; i<buffer.count();i++)
+    {
+        if(buffer.at(i) == "\r\nypr")
+        {
+            if(index == 17)
+                emit newData(frame.at(0).toDouble(),frame.at(1).toDouble(),frame.at(2).toDouble(),frame.at(3).toInt(),frame.at(4).toInt(),
+                             frame.at(5).toInt(),frame.at(6).toInt(),frame.at(7).toInt(),frame.at(8).toInt(),frame.at(9).toDouble(),
+                             frame.at(10).toDouble(),frame.at(11).toDouble(),frame.at(12).toDouble(),frame.at(13).toDouble(),
+                             frame.at(14).toDouble(),frame.at(15).toDouble(),frame.at(16).toDouble());
+            frame.clear();
+            index=0;
+        }
+        else
+        {
+            frame.append(buffer.at(i));
+            index++;
+        }
+    }
+    buffer.clear();
 }

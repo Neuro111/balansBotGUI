@@ -24,9 +24,23 @@ private slots:
 
     void on_portListComboBox_activated(const QString &arg1);
 
+    void readData();
+
 private:
     Ui::CommunicationWidget *ui;
     QSerialPort *port;
+    QString dataBuffer;
+    QStringList buffer;
+    QStringList frame;
+    int index;
+
+
+signals:
+    void rawData(QByteArray);
+    void newData(double dmpYaw, double dmpPitch, double dmpRoll,
+                 int accX, int accY, int accZ, int gyroX, int gyroY, int gyroZ,
+                 double accRoll, double gyroRoll, double compRoll, double kalRoll,
+                 double accPitch, double gyroPitch, double compPitch, double kalPitch);
 };
 
 #endif // COMMUNICATIONWIDGET_H
