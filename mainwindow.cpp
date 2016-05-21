@@ -6,11 +6,16 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    ui->rawDataMonitor->hide();
+    ui->portMonitor->hide();
+    ui->statusBar->hide();
     connect(ui->communicationPanel,SIGNAL(rawData(QByteArray)),this,SLOT(printData(QByteArray)));
     connect(ui->communicationPanel,
             SIGNAL(newData(double,double,double,int,int,int,int,int,int,double,double,double,double,double,double,double,double)),
             this,SLOT(newData(double,double,double,int,int,int,int,int,int,double,double,double,double,double,double,double,double)));
-
+    connect(ui->communicationPanel,
+            SIGNAL(newData2(double,double,double)),
+            this,SLOT(newData2(double,double,double)));
     QCustomPlot *customPlot = ui->plotPitch;
     customPlot->addGraph(); // blue line
     customPlot->graph(0)->setPen(QPen(Qt::blue));
@@ -69,10 +74,10 @@ void MainWindow::newData(double dmpYaw, double dmpPitch, double dmpRoll, int acc
    // static double lastPointKey = 0;
 //    if (key-lastPointKey > 0.01) // at most add point every 10 ms
 //    {
-      double value0 = dmpPitch;//qSin(key); //qSin(key*1.6+qCos(key*1.7)*2)*10 + qSin(key*1.2+0.56)*20 + 26;
-      double value1 = kalPitch;
-      double value2 = compPitch;
-      double value3 = accPitch;
+      double value0 = dmpPitch;// niebieski
+      double value1 = kalPitch; // czerwony
+      double value2 = compPitch; // żółty
+      double value3 = accPitch; //zielony
       // add data to lines:
       ui->plotPitch->graph(0)->addData(key, value0);
       ui->plotPitch->graph(1)->addData(key, value1);
@@ -119,6 +124,58 @@ void MainWindow::newData(double dmpYaw, double dmpPitch, double dmpRoll, int acc
     ui->portMonitor->append(QString::number(gyroPitch)+"\t"+QString::number(accPitch)+"\t"+QString::number(dmpPitch)+
                             "\t"+QString::number(compPitch)+"\t"+QString::number(kalPitch)+"\n");
     ui->rawDataMonitor->append(QString::number(accY)+"\t"+QString::number(gyroY)+"\n");
+}
+
+void MainWindow::newData2(double dmpYaw, double dmpPitch, double dmpRoll)
+{
+    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
+   // static double lastPointKey = 0;
+//    if (key-lastPointKey > 0.01) // at most add point every 10 ms
+//    {
+      double value0 = dmpPitch;// niebieski
+//      double value1 = kalPitch; // czerwony
+//      double value2 = compPitch; // żółty
+//      double value3 = accPitch; //zielony
+      // add data to lines:
+      ui->plotPitch->graph(0)->addData(key, value0);
+//      ui->plotPitch->graph(1)->addData(key, value1);
+//      ui->plotPitch->graph(2)->addData(key, value2);
+//      ui->plotPitch->graph(3)->addData(key, value3);
+      // set data of dots:
+//      ui->plotPitch->graph(2)->clearData();
+//      ui->plotPitch->graph(2)->addData(key, value0);
+//      ui->plotPitch->graph(3)->clearData();
+//      ui->plotPitch->graph(3)->addData(key, value1);
+      // remove data of lines that's outside visible range:
+      ui->plotPitch->graph(0)->removeDataBefore(key-8);
+//      ui->plotPitch->graph(1)->removeDataBefore(key-8);
+//      ui->plotPitch->graph(2)->removeDataBefore(key-8);
+//      ui->plotPitch->graph(3)->removeDataBefore(key-8);
+      // rescale value (vertical) axis to fit the current data:
+      ui->plotPitch->graph(0)->rescaleValueAxis(true);
+//      ui->plotPitch->graph(1)->rescaleValueAxis(true);
+//      ui->plotPitch->graph(2)->rescaleValueAxis(true);
+//      ui->plotPitch->graph(3)->rescaleValueAxis(true);
+  //    lastPointKey = key;
+  //  }
+    // make key axis range scroll with the data (at a constant range size of 8):
+    ui->plotPitch->xAxis->setRange(key+0.25, 8, Qt::AlignRight);
+    ui->plotPitch->replot();
+
+    // calculate frames per second:
+    static double lastFpsKey;
+    static int frameCount;
+    ++frameCount;
+    if (key-lastFpsKey > 2) // average fps over 2 seconds
+    {
+      ui->statusBar->showMessage(
+            QString("%1 FPS, Total Data points: %2")
+            .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
+            .arg(ui->plotPitch->graph(0)->data()->count()+ui->plotPitch->graph(1)->data()->count())
+            , 0);
+      lastFpsKey = key;
+      frameCount = 0;
+    }
 }
 
 void MainWindow::realtimeDataSlot()
