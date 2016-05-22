@@ -71,11 +71,11 @@ MainWindow::~MainWindow()
 void MainWindow::printData(QByteArray data)
 {
     ui->portMonitor->append(QString(data));
-    ui->portMonitor->append("\n");
-    ui->portMonitor->append("\n");
-    ui->rawDataMonitor->append(QString(data.toHex()));
-    ui->rawDataMonitor->append("\n");
-    ui->rawDataMonitor->append("\n");
+   // ui->portMonitor->append("\n");
+ //   ui->portMonitor->append("\n");
+//    ui->rawDataMonitor->append(QString(data.toHex()));
+//    ui->rawDataMonitor->append("\n");
+//    ui->rawDataMonitor->append("\n");
 }
 
 void MainWindow::newData(double dmpYaw, double dmpPitch, double dmpRoll, int accX, int accY, int accZ, int gyroX, int gyroY, int gyroZ, double accRoll, double gyroRoll, double compRoll, double kalRoll, double accPitch, double gyroPitch, double compPitch, double kalPitch)
@@ -211,7 +211,7 @@ void MainWindow::newData3(double dmpPitch, double setpoint, double input, double
       double value0 = dmpPitch;// niebieski
       double value1 = setpoint; // czerwony
       double value2 = input; // żółty
-      double value3 = output; //zielony
+      double value3 = output/10; //zielony
        //-gyroY/16.4; //fioletowy
 
 //      gyroYangle += (-gyroY/16.4) * dt;
@@ -311,4 +311,34 @@ void MainWindow::realtimeDataSlot()
       lastFpsKey = key;
       frameCount = 0;
     }
+}
+
+void MainWindow::on_SpinBox_Kp_editingFinished()
+{
+    ui->communicationPanel->writeData("p",ui->SpinBox_Kp->value());
+}
+
+void MainWindow::on_SpinBox_Ki_editingFinished()
+{
+    ui->communicationPanel->writeData("i",ui->SpinBox_Ki->value());
+}
+
+void MainWindow::on_SpinBox_Kd_editingFinished()
+{
+    ui->communicationPanel->writeData("d",ui->SpinBox_Kd->value());
+}
+
+void MainWindow::on_SpinBox_Setpoint_editingFinished()
+{
+    ui->communicationPanel->writeData("s",ui->SpinBox_Setpoint->value());
+}
+
+void MainWindow::on_doubleSpinBox_editingFinished()
+{
+    ui->communicationPanel->writeData("m",ui->doubleSpinBox->value());
+}
+
+void MainWindow::on_RescaleButton_clicked()
+{
+    ui->plotPitch->graph(0)->rescaleValueAxis();
 }

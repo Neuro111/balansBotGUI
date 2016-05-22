@@ -43,6 +43,8 @@ signals:
                  double accPitch, double gyroPitch, double compPitch, double kalPitch);
     void newData2(double dmpYaw, double dmpPitch, double dmpRoll);
     void newData3(double dmpPitch, double setpoint, double input, double output);
+public slots:
+    void writeData(const char *dataID, double data);
 };
 
 #endif // COMMUNICATIONWIDGET_H

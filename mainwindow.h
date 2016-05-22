@@ -32,6 +32,12 @@ private slots:
     void newData2(double dmpYaw, double dmpPitch, double dmpRoll);
     void newData3(double dmpPitch, double setpoint, double input, double output);
     void realtimeDataSlot();
+    void on_SpinBox_Kp_editingFinished();
+    void on_SpinBox_Ki_editingFinished();
+    void on_SpinBox_Kd_editingFinished();
+    void on_SpinBox_Setpoint_editingFinished();
+    void on_doubleSpinBox_editingFinished();
+    void on_RescaleButton_clicked();
 };
 
 #endif // MAINWINDOW_H

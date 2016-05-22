@@ -33,11 +33,11 @@ void CommunicationWidget::on_OpenButton_toggled(bool checked)
     {
         port->setPortName(ui->portListComboBox->currentText());
         if (port->open(QIODevice::ReadWrite)) {
-            ui->statusLabel->setText("Port otwarty");
+            //ui->statusLabel->setText("Port otwarty");
             ui->portListComboBox->setEnabled(false);
             connect(port,SIGNAL(readyRead()),this,SLOT(readData()));
         } else {
-            ui->statusLabel->setText("Nie można otworzyć portu" + port->errorString());
+         //   ui->statusLabel->setText("Nie można otworzyć portu" + port->errorString());
             ui->OpenButton->setChecked(false);
         }
     }
@@ -70,8 +70,9 @@ void CommunicationWidget::on_portListComboBox_activated(const QString &arg1)
 
 void CommunicationWidget::readData()
 {
-    dataBuffer.append(port->readAll());
-    //emit rawData(portData);
+    QByteArray rawDataBuffer = port->readAll();
+    dataBuffer.append(rawDataBuffer);
+    emit rawData(rawDataBuffer);
     //QStringList frame;
     buffer = dataBuffer.split("\t");
     dataBuffer = buffer.takeLast();
@@ -101,4 +102,18 @@ void CommunicationWidget::readData()
         }
     }
     buffer.clear();
+}
+
+void CommunicationWidget::writeData(const char* dataID, double data)
+{
+    QByteArray dataToSend;
+    dataToSend.append(dataID);
+    dataToSend.append("\t");
+    dataToSend.append(QByteArray::number(data));
+    dataToSend.append("\n");
+
+    qDebug() << dataToSend;
+    //qDebug() << dataToSend.toStdString();
+    port->write(QByteArray(dataToSend));
+  //  port->writeData(datastr);
 }
