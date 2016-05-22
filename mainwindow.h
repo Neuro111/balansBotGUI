@@ -20,6 +20,8 @@ public:
 private:
     Ui::MainWindow *ui;
     QTimer dataTimer;
+    double lastTime;
+    double gyroYangle;
 
 private slots:
     void printData(QByteArray data);
@@ -28,6 +30,7 @@ private slots:
                  double accRoll, double gyroRoll, double compRoll, double kalRoll,
                  double accPitch, double gyroPitch, double compPitch, double kalPitch);
     void newData2(double dmpYaw, double dmpPitch, double dmpRoll);
+    void newData3(double dmpPitch, double setpoint, double input, double output);
     void realtimeDataSlot();
 };
 

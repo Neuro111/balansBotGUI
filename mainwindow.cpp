@@ -16,6 +16,11 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(ui->communicationPanel,
             SIGNAL(newData2(double,double,double)),
             this,SLOT(newData2(double,double,double)));
+
+    connect(ui->communicationPanel,
+            SIGNAL(newData3(double,double,double,double)),
+            this,SLOT(newData3(double,double,double,double)));
+
     QCustomPlot *customPlot = ui->plotPitch;
     customPlot->addGraph(); // blue line
     customPlot->graph(0)->setPen(QPen(Qt::blue));
@@ -27,6 +32,8 @@ MainWindow::MainWindow(QWidget *parent) :
     customPlot->graph(2)->setPen(QPen(Qt::yellow));
     customPlot->addGraph(); // green line
     customPlot->graph(3)->setPen(QPen(Qt::green));
+    customPlot->addGraph(); // magenta line
+    customPlot->graph(4)->setPen(QPen(Qt::magenta));
    // customPlot->graph(0)->setChannelFillGraph(customPlot->graph(1));
 
 //    customPlot->addGraph(); // blue dot
@@ -37,7 +44,10 @@ MainWindow::MainWindow(QWidget *parent) :
 //    customPlot->graph(3)->setPen(QPen(Qt::red));
 //    customPlot->graph(3)->setLineStyle(QCPGraph::lsNone);
 //    customPlot->graph(3)->setScatterStyle(QCPScatterStyle::ssDisc);
-
+    gyroYangle =0;
+    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
+    double dt = key - lastTime;
+    lastTime = key;
     customPlot->xAxis->setTickLabelType(QCPAxis::ltDateTime);
     customPlot->xAxis->setDateTimeFormat("hh:mm:ss");
     customPlot->xAxis->setAutoTickStep(false);
@@ -71,6 +81,9 @@ void MainWindow::printData(QByteArray data)
 void MainWindow::newData(double dmpYaw, double dmpPitch, double dmpRoll, int accX, int accY, int accZ, int gyroX, int gyroY, int gyroZ, double accRoll, double gyroRoll, double compRoll, double kalRoll, double accPitch, double gyroPitch, double compPitch, double kalPitch)
 {
     double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
+    double dt = key - lastTime;
+    lastTime = key;
+
    // static double lastPointKey = 0;
 //    if (key-lastPointKey > 0.01) // at most add point every 10 ms
 //    {
@@ -78,11 +91,17 @@ void MainWindow::newData(double dmpYaw, double dmpPitch, double dmpRoll, int acc
       double value1 = kalPitch; // czerwony
       double value2 = compPitch; // żółty
       double value3 = accPitch; //zielony
+       //-gyroY/16.4; //fioletowy
+
+      gyroYangle += (-gyroY/16.4) * dt;
+      double value4 =gyroYangle;
+      qDebug() << gyroYangle;
       // add data to lines:
       ui->plotPitch->graph(0)->addData(key, value0);
       ui->plotPitch->graph(1)->addData(key, value1);
       ui->plotPitch->graph(2)->addData(key, value2);
       ui->plotPitch->graph(3)->addData(key, value3);
+      ui->plotPitch->graph(4)->addData(key, value4);
       // set data of dots:
 //      ui->plotPitch->graph(2)->clearData();
 //      ui->plotPitch->graph(2)->addData(key, value0);
@@ -93,11 +112,13 @@ void MainWindow::newData(double dmpYaw, double dmpPitch, double dmpRoll, int acc
       ui->plotPitch->graph(1)->removeDataBefore(key-8);
       ui->plotPitch->graph(2)->removeDataBefore(key-8);
       ui->plotPitch->graph(3)->removeDataBefore(key-8);
+      ui->plotPitch->graph(4)->removeDataBefore(key-8);
       // rescale value (vertical) axis to fit the current data:
       ui->plotPitch->graph(0)->rescaleValueAxis(true);
       ui->plotPitch->graph(1)->rescaleValueAxis(true);
       ui->plotPitch->graph(2)->rescaleValueAxis(true);
       ui->plotPitch->graph(3)->rescaleValueAxis(true);
+     // ui->plotPitch->graph(4)->rescaleValueAxis(true);
   //    lastPointKey = key;
   //  }
     // make key axis range scroll with the data (at a constant range size of 8):
@@ -176,6 +197,75 @@ void MainWindow::newData2(double dmpYaw, double dmpPitch, double dmpRoll)
       lastFpsKey = key;
       frameCount = 0;
     }
+}
+
+void MainWindow::newData3(double dmpPitch, double setpoint, double input, double output)
+{
+    double key = QDateTime::currentDateTime().toMSecsSinceEpoch()/1000.0;
+    double dt = key - lastTime;
+    lastTime = key;
+
+   // static double lastPointKey = 0;
+//    if (key-lastPointKey > 0.01) // at most add point every 10 ms
+//    {
+      double value0 = dmpPitch;// niebieski
+      double value1 = setpoint; // czerwony
+      double value2 = input; // żółty
+      double value3 = output; //zielony
+       //-gyroY/16.4; //fioletowy
+
+//      gyroYangle += (-gyroY/16.4) * dt;
+//      double value4 =gyroYangle;
+//      qDebug() << gyroYangle;
+      // add data to lines:
+      ui->plotPitch->graph(0)->addData(key, value0);
+      ui->plotPitch->graph(1)->addData(key, value1);
+      ui->plotPitch->graph(2)->addData(key, value2);
+      ui->plotPitch->graph(3)->addData(key, value3);
+//      ui->plotPitch->graph(4)->addData(key, value4);
+      // set data of dots:
+//      ui->plotPitch->graph(2)->clearData();
+//      ui->plotPitch->graph(2)->addData(key, value0);
+//      ui->plotPitch->graph(3)->clearData();
+//      ui->plotPitch->graph(3)->addData(key, value1);
+      // remove data of lines that's outside visible range:
+      ui->plotPitch->graph(0)->removeDataBefore(key-8);
+      ui->plotPitch->graph(1)->removeDataBefore(key-8);
+      ui->plotPitch->graph(2)->removeDataBefore(key-8);
+      ui->plotPitch->graph(3)->removeDataBefore(key-8);
+  //    ui->plotPitch->graph(4)->removeDataBefore(key-8);
+      // rescale value (vertical) axis to fit the current data:
+      ui->plotPitch->graph(0)->rescaleValueAxis(true);
+      ui->plotPitch->graph(1)->rescaleValueAxis(true);
+      ui->plotPitch->graph(2)->rescaleValueAxis(true);
+      ui->plotPitch->graph(3)->rescaleValueAxis(true);
+     // ui->plotPitch->graph(4)->rescaleValueAxis(true);
+  //    lastPointKey = key;
+  //  }
+    // make key axis range scroll with the data (at a constant range size of 8):
+    ui->plotPitch->xAxis->setRange(key+0.25, 8, Qt::AlignRight);
+    ui->plotPitch->replot();
+
+    // calculate frames per second:
+    static double lastFpsKey;
+    static int frameCount;
+    ++frameCount;
+    if (key-lastFpsKey > 2) // average fps over 2 seconds
+    {
+      ui->statusBar->showMessage(
+            QString("%1 FPS, Total Data points: %2")
+            .arg(frameCount/(key-lastFpsKey), 0, 'f', 0)
+            .arg(ui->plotPitch->graph(0)->data()->count()+ui->plotPitch->graph(1)->data()->count())
+            , 0);
+      lastFpsKey = key;
+      frameCount = 0;
+    }
+
+
+
+    ui->portMonitor->append(QString::number(dmpPitch)+"\t"+QString::number(setpoint)+"\t"+QString::number(input)+
+                            "\t"+QString::number(output)+"\n");
+    //ui->rawDataMonitor->append(QString::number(accY)+"\t"+QString::number(gyroY)+"\n");
 }
 
 void MainWindow::realtimeDataSlot()

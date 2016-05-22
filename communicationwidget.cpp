@@ -84,8 +84,13 @@ void CommunicationWidget::readData()
                              frame.at(5).toInt(),frame.at(6).toInt(),frame.at(7).toInt(),frame.at(8).toInt(),frame.at(9).toDouble(),
                              frame.at(10).toDouble(),frame.at(11).toDouble(),frame.at(12).toDouble(),frame.at(13).toDouble(),
                              frame.at(14).toDouble(),frame.at(15).toDouble(),frame.at(16).toDouble());
+            if(index == 9)
+                emit newData(frame.at(0).toDouble(),frame.at(1).toDouble(),frame.at(2).toDouble(),frame.at(3).toInt(),frame.at(4).toInt(),
+                             frame.at(5).toInt(),frame.at(6).toInt(),frame.at(7).toInt(),frame.at(8).toInt(),0,0,0,0,0,0,0,0);
             if(index == 3)
                 emit newData2(frame.at(0).toDouble(),frame.at(1).toDouble(),frame.at(2).toDouble());
+            if(index == 4)
+                emit newData3(frame.at(0).toDouble(),frame.at(1).toDouble(),frame.at(2).toDouble(), frame.at(3).toDouble());
             frame.clear();
             index=0;
         }
