@@ -22,16 +22,28 @@ MainWindow::MainWindow(QWidget *parent) :
             this,SLOT(newData3(double,double,double,double)));
 
     QCustomPlot *customPlot = ui->plotPitch;
+
+    customPlot->legend->setVisible(true);
+    QFont legendFont = font();  // start out with MainWindow's font..
+    legendFont.setPointSize(9); // and make a bit smaller for legend
+    customPlot->legend->setFont(legendFont);
+    customPlot->legend->setBrush(QBrush(QColor(255,255,255,230)));
+    // by default, the legend is in the inset layout of the main axis rect. So this is how we access it to change legend placement:
+    customPlot->axisRect()->insetLayout()->setInsetAlignment(0, Qt::AlignTop|Qt::AlignLeft);
     customPlot->addGraph(); // blue line
     customPlot->graph(0)->setPen(QPen(Qt::blue));
     customPlot->graph(0)->setBrush(QBrush(QColor(240, 255, 200)));
     customPlot->graph(0)->setAntialiasedFill(false);
+    customPlot->graph(0)->setName("real Theta");
     customPlot->addGraph(); // red line
     customPlot->graph(1)->setPen(QPen(Qt::red));
+    customPlot->graph(1)->setName("requested Theta");
     customPlot->addGraph(); // yellow line
     customPlot->graph(2)->setPen(QPen(Qt::yellow));
+    customPlot->graph(2)->setName("requested velocity");
     customPlot->addGraph(); // green line
     customPlot->graph(3)->setPen(QPen(Qt::green));
+    customPlot->graph(3)->setName("position");
     customPlot->addGraph(); // magenta line
     customPlot->graph(4)->setPen(QPen(Qt::magenta));
    // customPlot->graph(0)->setChannelFillGraph(customPlot->graph(1));
@@ -211,7 +223,7 @@ void MainWindow::newData3(double dmpPitch, double setpoint, double input, double
       double value0 = dmpPitch;// niebieski
       double value1 = setpoint; // czerwony
       double value2 = input; // żółty
-      double value3 = output/10; //zielony
+      double value3 = output; //zielony
        //-gyroY/16.4; //fioletowy
 
 //      gyroYangle += (-gyroY/16.4) * dt;
@@ -341,4 +353,39 @@ void MainWindow::on_doubleSpinBox_editingFinished()
 void MainWindow::on_RescaleButton_clicked()
 {
     ui->plotPitch->graph(0)->rescaleValueAxis();
+}
+
+void MainWindow::on_filterSpinBox_editingFinished()
+{
+    ui->communicationPanel->writeData("f",ui->filterSpinBox->value());
+}
+
+void MainWindow::on_balansKd_editingFinished()
+{
+    ui->communicationPanel->writeData("e",ui->balansKd->value());
+}
+
+void MainWindow::on_balansKi_editingFinished()
+{
+    ui->communicationPanel->writeData("w",ui->balansKi->value());
+}
+
+void MainWindow::on_balansKp_editingFinished()
+{
+    ui->communicationPanel->writeData("q",ui->balansKp->value());
+}
+
+void MainWindow::on_positionKp_editingFinished()
+{
+    ui->communicationPanel->writeData("r",ui->positionKp->value());
+}
+
+void MainWindow::on_positionKi_editingFinished()
+{
+    ui->communicationPanel->writeData("t",ui->positionKi->value());
+}
+
+void MainWindow::on_positionKd_editingFinished()
+{
+    ui->communicationPanel->writeData("y",ui->positionKd->value());
 }

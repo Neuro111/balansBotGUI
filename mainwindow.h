@@ -38,6 +38,13 @@ private slots:
     void on_SpinBox_Setpoint_editingFinished();
     void on_doubleSpinBox_editingFinished();
     void on_RescaleButton_clicked();
+    void on_filterSpinBox_editingFinished();
+    void on_balansKd_editingFinished();
+    void on_balansKi_editingFinished();
+    void on_balansKp_editingFinished();
+    void on_positionKp_editingFinished();
+    void on_positionKi_editingFinished();
+    void on_positionKd_editingFinished();
 };
 
 #endif // MAINWINDOW_H
