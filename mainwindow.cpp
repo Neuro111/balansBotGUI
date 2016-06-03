@@ -9,6 +9,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui->rawDataMonitor->hide();
     ui->portMonitor->hide();
     ui->statusBar->hide();
+    ui->groupBox_3->hide();
     connect(ui->communicationPanel,SIGNAL(rawData(QByteArray)),this,SLOT(printData(QByteArray)));
     connect(ui->communicationPanel,
             SIGNAL(newData(double,double,double,int,int,int,int,int,int,double,double,double,double,double,double,double,double)),
