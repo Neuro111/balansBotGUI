@@ -45,6 +45,13 @@ private slots:
     void on_positionKp_editingFinished();
     void on_positionKi_editingFinished();
     void on_positionKd_editingFinished();
+    void on_speedSlider_sliderMoved(int position);
+    void on_speedSlider_sliderReleased();
+    void on_turnSlider_sliderMoved(int position);
+    void on_turnSlider_sliderReleased();
+    void on_posReg_clicked(bool checked);
+    void on_groupBox_2_clicked(bool checked);
+    void on_turnSlider_sliderPressed();
 };
 
 #endif // MAINWINDOW_H

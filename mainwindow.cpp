@@ -390,3 +390,40 @@ void MainWindow::on_positionKd_editingFinished()
 {
     ui->communicationPanel->writeData("y",ui->positionKd->value());
 }
+
+void MainWindow::on_speedSlider_sliderMoved(int position)
+{
+    ui->communicationPanel->writeData("u",position);
+}
+
+void MainWindow::on_speedSlider_sliderReleased()
+{
+    ui->speedSlider->setValue(0);
+    ui->communicationPanel->writeData("u",0);
+}
+
+void MainWindow::on_turnSlider_sliderMoved(int position)
+{
+    ui->communicationPanel->writeData("o",position);
+}
+
+void MainWindow::on_turnSlider_sliderReleased()
+{
+    ui->turnSlider->setValue(0);
+    ui->communicationPanel->writeData("o",0);
+}
+
+void MainWindow::on_posReg_clicked(bool checked)
+{
+    ui->communicationPanel->writeData("a",checked);
+}
+
+void MainWindow::on_groupBox_2_clicked(bool checked)
+{
+    ui->communicationPanel->writeData("d",checked);
+}
+
+void MainWindow::on_turnSlider_sliderPressed()
+{
+    //ui->speedSlider->grab();
+}
