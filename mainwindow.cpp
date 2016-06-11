@@ -427,3 +427,13 @@ void MainWindow::on_turnSlider_sliderPressed()
 {
     //ui->speedSlider->grab();
 }
+
+void MainWindow::on_doubleSpinBox_2_editingFinished()
+{
+    ui->communicationPanel->writeData("m",ui->doubleSpinBox_2->value());
+}
+
+void MainWindow::on_orientationKi_editingFinished()
+{
+    ui->communicationPanel->writeData("s",ui->orientationKi->value());
+}
