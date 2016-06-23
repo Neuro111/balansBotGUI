@@ -257,6 +257,48 @@
          </widget>
         </item>
         <item>
+         <widget class="QGroupBox" name="rotationgroup">
+          <property name="title">
+           <string>Regulator rotacji</string>
+          </property>
+          <property name="checkable">
+           <bool>false</bool>
+          </property>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="label_16">
+             <property name="text">
+              <string>Kp</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="rotationKp"/>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="rotationKi"/>
+           </item>
+           <item row="2" column="1">
+            <widget class="QDoubleSpinBox" name="rotationKd"/>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_17">
+             <property name="text">
+              <string>Ki</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_18">
+             <property name="text">
+              <string>Kd</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
          <widget class="QGroupBox" name="groupBox_2">
           <property name="title">
            <string>Regulator orientacji</string>
@@ -266,7 +308,7 @@
           </property>
           <layout class="QFormLayout" name="formLayout_6">
            <item row="0" column="1">
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_2">
+            <widget class="QDoubleSpinBox" name="orientationKp">
              <property name="value">
               <double>15.000000000000000</double>
              </property>
@@ -283,7 +325,7 @@
             </widget>
            </item>
            <item row="2" column="1">
-            <widget class="QDoubleSpinBox" name="doubleSpinBox_4"/>
+            <widget class="QDoubleSpinBox" name="orientationKd"/>
            </item>
            <item row="0" column="0">
             <widget class="QLabel" name="label_13">
@@ -391,10 +433,10 @@
            </sizepolicy>
           </property>
           <property name="minimum">
-           <number>-100</number>
+           <number>-500</number>
           </property>
           <property name="maximum">
-           <number>100</number>
+           <number>500</number>
           </property>
           <property name="orientation">
            <enum>Qt::Horizontal</enum>

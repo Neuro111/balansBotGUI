@@ -52,8 +52,12 @@ private slots:
     void on_posReg_clicked(bool checked);
     void on_groupBox_2_clicked(bool checked);
     void on_turnSlider_sliderPressed();
-    void on_doubleSpinBox_2_editingFinished();
     void on_orientationKi_editingFinished();
+    void on_rotationKp_editingFinished();
+    void on_rotationKi_editingFinished();
+    void on_rotationKd_editingFinished();
+    void on_orientationKp_editingFinished();
+    void on_orientationKd_editingFinished();
 };
 
 #endif // MAINWINDOW_H

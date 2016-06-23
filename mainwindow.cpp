@@ -420,7 +420,7 @@ void MainWindow::on_posReg_clicked(bool checked)
 
 void MainWindow::on_groupBox_2_clicked(bool checked)
 {
-    ui->communicationPanel->writeData("d",checked);
+    ui->communicationPanel->writeData("g",checked);
 }
 
 void MainWindow::on_turnSlider_sliderPressed()
@@ -428,12 +428,33 @@ void MainWindow::on_turnSlider_sliderPressed()
     //ui->speedSlider->grab();
 }
 
-void MainWindow::on_doubleSpinBox_2_editingFinished()
+
+void MainWindow::on_rotationKp_editingFinished()
 {
-    ui->communicationPanel->writeData("m",ui->doubleSpinBox_2->value());
+    ui->communicationPanel->writeData("l",ui->rotationKp->value());
+}
+
+void MainWindow::on_rotationKi_editingFinished()
+{
+    ui->communicationPanel->writeData("z",ui->rotationKi->value());
+}
+
+void MainWindow::on_rotationKd_editingFinished()
+{
+    ui->communicationPanel->writeData("x",ui->rotationKd->value());
+}
+
+void MainWindow::on_orientationKp_editingFinished()
+{
+    ui->communicationPanel->writeData("h",ui->orientationKp->value());
 }
 
 void MainWindow::on_orientationKi_editingFinished()
 {
-    ui->communicationPanel->writeData("s",ui->orientationKi->value());
+    ui->communicationPanel->writeData("j",ui->orientationKi->value());
+}
+
+void MainWindow::on_orientationKd_editingFinished()
+{
+    ui->communicationPanel->writeData("k",ui->orientationKd->value());
 }
